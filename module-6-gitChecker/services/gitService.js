@@ -32,10 +32,10 @@ module.exports = () => {
 
             response.on('end', () => {
                 let user = JSON.parse(str);
-                getRepos(userId, (repos) => {
-                    user.repos = repos;
+                // getRepos(userId, (repos) => {
+                    // user.repos = repos;
                     resolve(user);
-                });
+                // });
             });
 
             response.on('error', (e) => {
