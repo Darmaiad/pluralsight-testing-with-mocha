@@ -11,8 +11,8 @@ const gitService = require('./../../services/gitService')();
 chai.use(chaiAsPromised);
 chai.should();
 
-describe('GitService', () => {
-    describe('GetUser', () => {
+describe('GitService', function () {
+    describe('GetUser', function () {
         // Can't use arrow functions neither in the 'beforeEach' nor in 'it', we need to maintain 'this'.
         beforeEach(function () {
             this.request = sinon.stub(https, 'request');
@@ -35,18 +35,33 @@ describe('GitService', () => {
             mockRepoResponse.end();
 
             // This works, the code below, although described in the course, does not.
-            this.request.callsArgWith(1, mockUserResponse).returns(new PassThrough())
+            // this.request.callsArgWith(1, mockUserResponse).onFirstCall().returns(new PassThrough())
+            // this.request.callsArgWith(1, mockRepoResponse).onFirstCall().returns(new PassThrough())
+            this.request.onFirstCall().returns(mockRepoResponse);
 
             // The next call of the stubed function will be made with 'mockUserResponse' as the second (indexing from 0) argument
-            // this.request.onFirstCall().callsArgWith(1, mockUserResponse).returns(new PassThrough());
-            // this.request.onSecondCall().callsArgWith(1, mockRepoResponse).returns(new PassThrough());
+            // this.request
+            //      .onFirstCall().callsArgWith(1, mockUserResponse).returns(new PassThrough())
+            //      .onSecondCall().callsArgWith(1, mockRepoResponse).returns(new PassThrough());
 
-            gitService.getUser('jonathanfmills').then(function (user) {
-                console.log('resolved');
-                user.login.should.equal('jonathanfmills');
+            gitService.getRepos('jonathanfmills').then( (r) => {
+                console.log('resolved: ', r);
+                // const params = this.request.getCall(0).args;
+                // const params2 = this.request.getCall(1).args;
+                // console.log('params: ', params2);
+                // user.login.should.equal('jonathanfmills');
                 // user.should.have.property('repos');
                 done();
             });
+            // gitService.getUser('jonathanfmills').then( (user) => {
+            //     console.log('resolved: ', user);
+            //     const params = this.request.getCall(0).args;
+            //     const params2 = this.request.getCall(1).args;
+            //     console.log('params: ', params2);
+            //     // user.login.should.equal('jonathanfmills');
+            //     // user.should.have.property('repos');
+            //     done();
+            // });
         });
 
         // Restore what we stubed

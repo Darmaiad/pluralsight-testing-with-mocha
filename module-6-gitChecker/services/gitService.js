@@ -1,7 +1,7 @@
 const https = require('https');
 
 module.exports = () => {
-    const getRepos = (userId, cb) => {
+    const getRepos = (userId) => new Promise((resolve) => {
         const options = {
             host: 'api.github.com',
             path: `/users/${userId}/repos`,
@@ -11,12 +11,16 @@ module.exports = () => {
         const callback = (response) => {
             let str = '';
 
-            response.on('data', (chunk) => str += chunk);
-            response.on('end', () => cb(JSON.parse(str)));
+            response.on('data', (chunk) => { str += chunk });
+
+            response.on('end', () => {
+                let repos = JSON.parse(str);
+                resolve(repos);
+            });
         };
 
         https.request(options, callback).end();
-    }
+    });
 
     const getUser = (userId) => new Promise((resolve) => {
         const options = {
@@ -28,14 +32,15 @@ module.exports = () => {
         const callback = (response) => {
             let str = '';
 
-            response.on('data', (chunk) => str += chunk);
+            response.on('data', (chunk) => { str += chunk });
 
             response.on('end', () => {
                 let user = JSON.parse(str);
-                // getRepos(userId, (repos) => {
-                    // user.repos = repos;
-                    resolve(user);
-                // });
+                getRepos(userId).then((repos) => {
+                    console.log('repossssssssssssssssssssss')
+                    user.repos = repos;
+                });
+                resolve(user);
             });
 
             response.on('error', (e) => {
@@ -48,5 +53,6 @@ module.exports = () => {
 
     return {
         getUser,
+        getRepos,
     };
 };
