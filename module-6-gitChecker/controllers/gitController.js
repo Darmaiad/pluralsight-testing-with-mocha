@@ -1,5 +1,6 @@
 
 var gitService = require('../services/gitService')();
+
 module.exports = function () {
     var userGet = function (req, res) {
         var userId = req.params.userId;
