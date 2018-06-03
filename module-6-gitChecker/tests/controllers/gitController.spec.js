@@ -35,8 +35,7 @@ describe('GitController', function () {
         this.request.callsArgWith(1, this.gitResponse).returns(new PassThrough());
     });
 
-
-    it.only('should get a user and repos', function (done) {
+    it('should get a user and repos', function (done) {
         this.timeout(4000);
         var req = { params: { userId: 'jonathanfmills' } };
         var res = { json: test };
