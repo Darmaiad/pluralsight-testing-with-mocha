@@ -5,9 +5,12 @@ var PassThrough = require('stream').PassThrough;
 var http = require('https');
 var rewire = require('rewire');
 
-// Instead of require we use rewire
-var GitCtrl = rewire('../../controllers/gitController');
+// Git Controller is a function after we require/import it, we need to execute it
+// in order to get an instance of it.
+
+
 // instead of require('../../controllers/gitController')(); we do it in 2 steps in order to rewire.
+var GitCtrl = rewire('../../controllers/gitController'); // Instead of require we use rewire
 var gitController = GitCtrl();
 
 chai.use(chaiAsPromised);
